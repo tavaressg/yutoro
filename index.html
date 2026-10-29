@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="description" content="Protótipo do site da Yutoro, funcional e condicionamento em Pedro Leopoldo.">
+<style>[hidden]{display:none!important}body{margin:0}</style>
+<title>Yutoro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Montserrat:wght@400;500;600;700&display=swap">
+<style>
+/* Forte hoje, forte amanhã: grafite e laranja do box, títulos de placar, touro como assinatura. Visual único, sempre escuro. */
+:root {
+  --grafite: #121316;
+  --carvao: #1C1E23;
+  --linha: #2C2F36;
+  --laranja: #FF7A1E;
+  --osso: #EDEAE4;
+  --aco: #9EA3AD;
+  --placar: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --sans: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --secao: 72px;
+  color-scheme: dark;
+}
+@media (min-width: 1024px) { :root { --secao: 112px; } }
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+body { background: var(--grafite); color: var(--osso); font: 400 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+@media (min-width: 1024px) { body { font-size: 17px; } }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--grafite); }
+
+.gutter { padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1200px; margin: 0 auto; }
+h1, h2, h3 { margin: 0; font-family: var(--placar); font-weight: 800; text-transform: uppercase; line-height: .92; letter-spacing: 0; text-wrap: balance; }
+h2 { font-size: clamp(44px, 8vw, 88px); }
+h3 { font-size: 30px; line-height: 1; }
+p { margin: 0; }
+img { display: block; width: 100%; height: auto; }
+a { color: inherit; text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--laranja); outline-offset: 3px; }
+section { padding-block: var(--secao); scroll-margin-top: 64px; }
+.secundario { color: var(--aco); }
+.pendente { color: var(--aco); border: 1px dashed var(--aco); padding: 0 6px; border-radius: 4px; font-size: .9em; }
+.cabeca { display: grid; gap: 16px; margin-bottom: 48px; max-width: 760px; }
+.cabeca p { color: var(--aco); font-size: 18px; max-width: 46ch; }
+
+.aviso { background: var(--laranja); color: var(--grafite); font-size: 13px; font-weight: 600; padding-block: 8px; text-align: center; }
+
+.botao { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px; background: var(--laranja); color: var(--grafite); text-decoration: none; font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: .06em; border: 0; transition: background 150ms; }
+.botao:hover { background: #FF9447; }
+.botao.vazado { background: transparent; color: var(--osso); box-shadow: inset 0 0 0 2px var(--linha); }
+.botao.vazado:hover { box-shadow: inset 0 0 0 2px var(--osso); }
+
+/* Cabeçalho */
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: rgba(18,19,22,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linha); }
+header .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+.marca { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--placar); font-weight: 900; font-size: 26px; letter-spacing: .08em; text-transform: uppercase; color: var(--osso); }
+.marca img { width: 34px; }
+nav { display: flex; align-items: center; gap: 28px; }
+nav .ancora { display: none; text-decoration: none; padding-block: 8px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--aco); }
+nav .ancora:hover { color: var(--osso); }
+nav .botao { min-height: 40px; padding: 0 18px; font-size: 13px; white-space: nowrap; }
+@media (max-width: 767px) { nav .botao { display: none; } }
+@media (min-width: 1024px) { nav .ancora { display: inline; } }
+
+/* Abertura */
+.abertura { position: relative; overflow: hidden; }
+.abertura .touro-fundo { position: absolute; width: min(900px, 140vw); right: -18%; top: 50%; transform: translateY(-50%); opacity: .07; pointer-events: none; }
+.abertura .wrap { position: relative; display: grid; gap: 40px; padding-block: 48px 64px; }
+.abertura h1 { font-size: clamp(64px, 13vw, 150px); animation: entra 600ms ease-out both; }
+.abertura h1 span { display: block; color: var(--laranja); }
+.abertura .apoio { margin-top: 24px; font-size: 18px; color: var(--aco); max-width: 38ch; }
+.abertura .acoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.abertura figure { margin: 0; justify-self: center; max-width: 340px; box-shadow: 12px 12px 0 var(--laranja); }
+@keyframes entra { from { opacity: .001; transform: translateY(18px); } }
+@media (min-width: 1024px) { .abertura .wrap { grid-template-columns: 1.4fr 1fr; align-items: center; padding-block: 72px 96px; } .abertura figure { justify-self: end; } }
+
+/* Números */
+.numeros { border-block: 1px solid var(--linha); }
+.numeros .wrap { display: grid; }
+.numero { padding-block: 28px; display: grid; gap: 6px; border-bottom: 1px solid var(--linha); }
+.numero:last-child { border-bottom: 0; }
+.numero strong { font-family: var(--placar); font-weight: 900; font-size: clamp(64px, 9vw, 104px); line-height: .9; color: var(--laranja); font-variant-numeric: tabular-nums; }
+.numero span { color: var(--aco); max-width: 26ch; }
+@media (min-width: 900px) { .numeros .wrap { grid-template-columns: repeat(3, 1fr); } .numero { border-bottom: 0; border-right: 1px solid var(--linha); padding-inline: 32px; } .numero:first-child { padding-left: 0; } .numero:last-child { border-right: 0; } }
+
+/* Treinos */
+.treinos { display: grid; gap: 12px; }
+.treino { background: var(--carvao); padding: 28px; display: grid; gap: 14px; align-content: start; }
+.treino p { color: var(--aco); }
+@media (min-width: 900px) { .treinos { grid-template-columns: repeat(3, 1fr); } }
+
+/* Como é treinar */
+.lado { display: grid; gap: 40px; align-items: center; }
+.lado figure { margin: 0; }
+.lado .texto { display: grid; gap: 20px; }
+.lado .texto p { font-size: 19px; max-width: 40ch; }
+.lado ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 10px; }
+.lado li { display: flex; gap: 12px; align-items: baseline; font-weight: 600; }
+.lado li::before { content: ""; flex: none; width: 10px; height: 10px; background: var(--laranja); transform: translateY(-1px); }
+@media (min-width: 1024px) { .lado { grid-template-columns: 1fr 1fr; gap: 80px; } }
+
+/* Resultados */
+.resultados { display: grid; gap: 12px; }
+.resultado { border: 1px solid var(--linha); padding: 28px; display: grid; gap: 12px; align-content: start; }
+.resultado strong { font-family: var(--placar); font-weight: 900; font-size: 72px; line-height: .9; color: var(--laranja); }
+.resultado p { color: var(--aco); }
+@media (min-width: 900px) { .resultados { grid-template-columns: repeat(3, 1fr); } }
+
+/* Google */
+.google .topo { display: flex; flex-wrap: wrap; align-items: end; gap: 16px 32px; margin-bottom: 40px; }
+.google .topo .nota { font-family: var(--placar); font-weight: 900; font-size: clamp(96px, 16vw, 168px); line-height: .8; color: var(--laranja); }
+.google .topo p { color: var(--aco); max-width: 30ch; }
+.temas { display: grid; gap: 12px; }
+.tema { background: var(--carvao); padding: 24px; display: grid; gap: 10px; align-content: start; }
+.tema blockquote { margin: 0; font-size: 17px; }
+.tema cite { font-style: normal; color: var(--aco); font-size: 14px; }
+.google .links { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 28px; }
+.google .links a { padding-block: 8px; font-weight: 600; color: var(--laranja); }
+@media (min-width: 900px) { .temas { grid-template-columns: repeat(4, 1fr); } }
+
+/* Avaliações em movimento */
+.marquee { display: grid; gap: 12px; overflow: hidden; margin-inline: calc(-1 * max(20px, env(safe-area-inset-left, 0px))); mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
+.trilho { display: flex; width: max-content; }
+.faixa { display: flex; gap: 12px; padding-right: 12px; }
+.trilho.ida { animation: rolar 120s linear infinite; }
+.trilho.volta { animation: rolar 140s linear infinite reverse; }
+.marquee:hover .trilho, .marquee:focus-within .trilho { animation-play-state: paused; }
+@keyframes rolar { to { transform: translateX(-50%); } }
+.review { margin: 0; width: 320px; flex: none; background: var(--carvao); padding: 22px 24px; display: grid; gap: 10px; align-content: start; }
+.review .estrelas { color: var(--laranja); letter-spacing: 2px; font-size: 15px; }
+.review blockquote { margin: 0; font-size: 15px; line-height: 1.55; }
+.review figcaption { color: var(--aco); font-size: 14px; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee { mask-image: none; -webkit-mask-image: none; margin-inline: 0; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .trilho { animation: none; }
+  .faixa[aria-hidden="true"] { display: none; }
+  .review { scroll-snap-align: start; }
+}
+
+/* Horários */
+.horarios .wrap { display: grid; gap: 40px; }
+.proxima { margin-top: 24px; display: grid; gap: 4px; }
+.proxima .rotulo { font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: .08em; color: var(--aco); }
+.proxima .hora { font-family: var(--placar); font-weight: 900; font-size: clamp(96px, 16vw, 184px); line-height: .85; color: var(--laranja); font-variant-numeric: tabular-nums; }
+.proxima .quando { font-family: var(--placar); font-weight: 800; font-size: 28px; text-transform: uppercase; }
+.checkin { margin-top: 24px; color: var(--aco); max-width: 34ch; }
+.checkin strong { color: var(--osso); }
+.grade { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.grade li { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; background: var(--carvao); padding: 14px 16px; }
+.grade li b { font-family: var(--placar); font-weight: 800; font-size: 26px; text-transform: uppercase; }
+.grade li.fechado { background: transparent; border: 1px solid var(--linha); }
+.grade li.fechado b, .grade li.fechado .vazio { color: var(--aco); }
+.grade li.hoje { outline: 2px solid var(--laranja); outline-offset: -2px; }
+.horas { display: flex; flex-wrap: wrap; gap: 6px; }
+.horas span { min-width: 48px; text-align: center; padding: 6px 8px; border: 1px solid var(--linha); font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; }
+.horas span.manha { border-color: #3A3D45; }
+.horas span.passou { color: #5C606A; border-style: dashed; }
+.horas span.agora { background: var(--laranja); border-color: var(--laranja); color: var(--grafite); }
+.legenda { margin-top: 12px; font-size: 13px; color: var(--aco); }
+@media (min-width: 1024px) { .horarios .wrap { grid-template-columns: 1fr 1.3fr; align-items: center; gap: 80px; } }
+
+/* Aula experimental */
+.experimental { background: var(--carvao); }
+.experimental .wrap { display: grid; gap: 40px; }
+form { display: grid; gap: 28px; }
+label, legend { font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: .06em; }
+fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; }
+input[type="text"] { font: inherit; color: var(--osso); background: var(--grafite); border: 1px solid var(--linha); min-height: 52px; padding: 0 16px; width: 100%; margin-top: 10px; }
+input[type="text"]:focus { outline: 2px solid var(--laranja); outline-offset: 0; border-color: transparent; }
+.opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.opcoes label { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 15px; position: relative; }
+.opcoes input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.opcoes span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--linha); background: var(--grafite); }
+.opcoes input:checked + span { background: var(--laranja); color: var(--grafite); border-color: var(--laranja); font-weight: 700; }
+.opcoes input:focus-visible + span { outline: 3px solid var(--laranja); outline-offset: 2px; }
+.nota-form { font-size: 13px; color: var(--aco); }
+@media (min-width: 1024px) { .experimental .wrap { grid-template-columns: 1fr 1.2fr; gap: 80px; } }
+
+/* Dúvidas */
+.duvidas { display: grid; gap: 0; border-top: 1px solid var(--linha); }
+details { border-bottom: 1px solid var(--linha); }
+summary { cursor: pointer; list-style: none; padding-block: 20px; font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 16px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--placar); font-size: 32px; line-height: .7; color: var(--laranja); }
+details[open] summary::after { content: "–"; }
+details p { padding-bottom: 20px; color: var(--aco); max-width: 60ch; }
+
+/* Onde */
+.onde { display: grid; gap: 24px; }
+.onde .endereco { font-size: 20px; }
+.onde .tel { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; user-select: all; }
+.onde .acoes { display: flex; flex-wrap: wrap; gap: 12px; }
+
+footer { padding-block: 40px 120px; border-top: 1px solid var(--linha); font-size: 14px; color: var(--aco); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: center; }
+footer .marca { font-size: 20px; }
+footer .marca img { width: 26px; }
+footer a.insta { padding-block: 8px; color: var(--laranja); font-weight: 600; }
+@media (min-width: 768px) { footer { padding-bottom: 40px; } }
+
+.barra { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--grafite); border-top: 1px solid var(--linha); padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.barra .botao { width: 100%; }
+@media (min-width: 768px) { .barra { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="aviso gutter">Protótipo para aprovação. Fotos do Instagram público da Yutoro. O que está tracejado depende de confirmação.</div>
+
+<header class="gutter">
+  <div class="wrap">
+    <a class="marca" href="#inicio" aria-label="Yutoro, voltar ao início"><img src="img/touro.png" width="331" height="256" alt="">Yutoro</a>
+    <nav aria-label="Principal">
+      <a class="ancora" href="#treinos">Treinos</a>
+      <a class="ancora" href="#resultados">Resultados</a>
+      <a class="ancora" href="#horarios">Horários</a>
+      <a class="ancora" href="#duvidas">Dúvidas</a>
+      <a class="ancora" href="#onde">Onde estamos</a>
+      <a class="botao" href="#experimental">Aula experimental</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <div class="abertura gutter">
+    <img class="touro-fundo" src="img/touro.png" width="331" height="256" alt="">
+    <div class="wrap">
+      <div>
+        <h1>Treine forte hoje. <span>E amanhã também.</span></h1>
+        <p class="apoio">Funcional e condicionamento no Centro de Pedro Leopoldo, com um professor ao lado em cada repetição.</p>
+        <div class="acoes">
+          <a class="botao" href="#experimental">Agendar aula experimental</a>
+          <a class="botao vazado" href="#treinos">Ver os treinos</a>
+        </div>
+      </div>
+      <figure><img src="img/bola.jpg" width="360" height="640" alt="Aluna agachada sobre uma medicine ball, enxugando o rosto, na frente do touro laranja pintado na parede do box"></figure>
+    </div>
+  </div>
+
+  <div class="numeros gutter" aria-label="Números da Yutoro">
+    <div class="wrap">
+      <div class="numero"><strong>5,0</strong><span>no Google, em 29 avaliações</span></div>
+      <div class="numero"><strong>28 kg</strong><span>perdidos por uma aluna, junto com a ansiedade e a insônia</span></div>
+      <div class="numero"><strong>13 kg</strong><span>de massa muscular ganhos por uma aluna em um ano</span></div>
+    </div>
+  </div>
+
+  <section id="treinos" class="gutter">
+    <div class="wrap">
+      <div class="cabeca">
+        <h2>Treinos</h2>
+        <p>Técnica e segurança em primeiro lugar, para emagrecer, ganhar massa ou só voltar a se mexer.</p>
+      </div>
+      <div class="treinos">
+        <div class="treino"><h3>Funcional e condicionamento</h3><p>Aulas em turma com o treino adaptado ao seu nível. Quem está começando treina junto com quem já treina há anos.</p></div>
+        <div class="treino"><h3>Aula personalizada</h3><p>Acompanhamento repetição por repetição, com foco no seu objetivo e nos seus limites.</p></div>
+        <div class="treino"><h3>Kids</h3><p>Movimento, coordenação e diversão para as crianças. <span class="pendente">idade e horário a confirmar</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="gutter" aria-labelledby="t-lado">
+    <div class="wrap lado">
+      <figure><img src="img/coach-aluna.jpg" width="360" height="257" loading="lazy" alt="Coach abraçado a uma aluna sorridente, os dois em frente ao touro laranja da parede"></figure>
+      <div class="texto">
+        <h2 id="t-lado">Você nunca treina sozinho</h2>
+        <p>Tem sempre um professor ao lado, ajustando a técnica e a carga para você evoluir sem se machucar.</p>
+        <ul>
+          <li>Correção de cada movimento</li>
+          <li>Intensidade certa para o seu condicionamento</li>
+          <li>Um ambiente sem comparação entre alunos</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultados" class="gutter">
+    <div class="wrap">
+      <div class="cabeca">
+        <h2>Resultados</h2>
+        <p>Histórias de alunos contadas no Instagram da Yutoro. <span class="pendente">autorização dos alunos</span></p>
+      </div>
+      <div class="resultados">
+        <div class="resultado"><strong>−28 kg</strong><p>"Perdi a ansiedade, a insônia, 28 kg e muito mais, mas ganhei saúde, disposição, autoestima e qualidade de vida."</p></div>
+        <div class="resultado"><strong>+13 kg</strong><p>A Isabela ganhou 13 kg de massa muscular em um ano, com técnica, ajuste de intensidade e paciência.</p></div>
+        <div class="resultado"><strong>Sem dor</strong><p>A Camilla acabou com a dor lombar que atrapalhava o dia a dia, com fortalecimento e mobilidade.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="google gutter" aria-labelledby="t-google">
+    <div class="wrap">
+      <div class="topo">
+        <p class="nota" aria-hidden="true">5,0</p>
+        <div>
+          <h2 id="t-google" style="font-size: clamp(36px, 5vw, 56px)">O que dizem no Google</h2>
+          <p>29 avaliações, todas com 5 estrelas, em outubro de 2026.</p>
+        </div>
+      </div>
+      <div class="marquee" role="region" aria-label="28 avaliações do Google, rolando automaticamente. Passe o mouse para pausar."><div class="trilho ida"><div class="faixa"><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor Cross de Pedro Leopoldo/região! Não se trata apenas de um box de CrossFit, mas de uma comunidade acolhedora e encorajadora, que torna cada treino divertido e desafiador em perfeita harmonia. Recomendo para quem busca melhorar sua forma física e se superar a cada dia. Parabéns a toda a equipe Yutoro!</blockquote><figcaption>Michelle M Vianello</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor box! A atenção e profissionalismo do Rafa tornam cada treino uma experiência incrível. Estou muito satisfeita com o suporte e a dedicação, oque faz com que me sinta mais motivada para alcançar meus objetivos. Qualidade excepcional!</blockquote><figcaption>Sarah Pereira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Pra quem busca excelência nos treinos, esse é o lugar certo! Rafael é um coach dedicado e atencioso que te direciona muito bem, fazendo adaptações para atender cada aluno com segurança. Box sensacional!!!!!</blockquote><figcaption>Daniele Lopes</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Já treinei em alguns box, porém só na YUTORO que de verdade aprendi a gostar de atividade física. Coach extremamente técnico, evitando lesões! E o melhor, a turma parece que é selecionada dedo, galera nota milll..</blockquote><figcaption>Marcos Andre</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Academia incrível, bem equipada, turma amigável, metodologia de trabalho irretocável, com foco na segurança dos alunos, o que, na minha opinião, é o grande diferencial da Yutoro. Coach super capaz, responsável e atencioso.</blockquote><figcaption>Marcele Teixeira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>A melhor experiência que tive com atividade física,o Rafa é atencioso, sabe o tempo e o potencial de cada aluno, o lugar tem uma estrutura espetacular, um box que dá gosto de exercitar, e uma turma maravilhosa.</blockquote><figcaption>Joseane Mendes</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Excelente Box! O ambiente é excelente, sem contar com o professor Rafael, muito atencioso, prestativo, muito paciente em passar todas as técnicas com segurança.</blockquote><figcaption>Filipe Alves</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Um box diferenciado, preza pela técnica e pela segurança dos alunos em primeiro lugar. Esse lugar que mudou minha vida e minha rotina de atividades físicas! Recomendo 1000 vezes!</blockquote><figcaption>Elder Alvarenga</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor CrossFit da cidade! Ambiente excelente. Além de treinar, você aprende muito sobre a importância dos exercícios para a saúde.</blockquote><figcaption>Alexandre Magno</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Ambiente familiar, o treinador sempre presente na hora dos exercícios, explicação e exemplo nos exercícios, companheiros de treinos sempre incentivam nos treinos.</blockquote><figcaption>Diego Porto</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Sensacional! Atendimento personalizado, todo cuidado para que você não lesione nas aulas e promove um alcance rápido de objetivos com segurança. Sem igual.</blockquote><figcaption>Alanna Vieira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Sensacional! Simplesmente o MELHOR crossfit da região: ambiente familiar e amigável!</blockquote><figcaption>Karen Teixeira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor box!! Preza pela segurança e na qualidade do treinamento!! Professor excelente! Um exemplo para os alunos!!</blockquote><figcaption>Leonardo Sales</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor Box da cidade! Tudo feito com muita segurança e acompanhamento personalizado.</blockquote><figcaption>Elisa Alvarenga</figcaption></figure></div><div class="faixa" aria-hidden="true"><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor Cross de Pedro Leopoldo/região! Não se trata apenas de um box de CrossFit, mas de uma comunidade acolhedora e encorajadora, que torna cada treino divertido e desafiador em perfeita harmonia. Recomendo para quem busca melhorar sua forma física e se superar a cada dia. Parabéns a toda a equipe Yutoro!</blockquote><figcaption>Michelle M Vianello</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor box! A atenção e profissionalismo do Rafa tornam cada treino uma experiência incrível. Estou muito satisfeita com o suporte e a dedicação, oque faz com que me sinta mais motivada para alcançar meus objetivos. Qualidade excepcional!</blockquote><figcaption>Sarah Pereira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Pra quem busca excelência nos treinos, esse é o lugar certo! Rafael é um coach dedicado e atencioso que te direciona muito bem, fazendo adaptações para atender cada aluno com segurança. Box sensacional!!!!!</blockquote><figcaption>Daniele Lopes</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Já treinei em alguns box, porém só na YUTORO que de verdade aprendi a gostar de atividade física. Coach extremamente técnico, evitando lesões! E o melhor, a turma parece que é selecionada dedo, galera nota milll..</blockquote><figcaption>Marcos Andre</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Academia incrível, bem equipada, turma amigável, metodologia de trabalho irretocável, com foco na segurança dos alunos, o que, na minha opinião, é o grande diferencial da Yutoro. Coach super capaz, responsável e atencioso.</blockquote><figcaption>Marcele Teixeira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>A melhor experiência que tive com atividade física,o Rafa é atencioso, sabe o tempo e o potencial de cada aluno, o lugar tem uma estrutura espetacular, um box que dá gosto de exercitar, e uma turma maravilhosa.</blockquote><figcaption>Joseane Mendes</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Excelente Box! O ambiente é excelente, sem contar com o professor Rafael, muito atencioso, prestativo, muito paciente em passar todas as técnicas com segurança.</blockquote><figcaption>Filipe Alves</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Um box diferenciado, preza pela técnica e pela segurança dos alunos em primeiro lugar. Esse lugar que mudou minha vida e minha rotina de atividades físicas! Recomendo 1000 vezes!</blockquote><figcaption>Elder Alvarenga</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor CrossFit da cidade! Ambiente excelente. Além de treinar, você aprende muito sobre a importância dos exercícios para a saúde.</blockquote><figcaption>Alexandre Magno</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Ambiente familiar, o treinador sempre presente na hora dos exercícios, explicação e exemplo nos exercícios, companheiros de treinos sempre incentivam nos treinos.</blockquote><figcaption>Diego Porto</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Sensacional! Atendimento personalizado, todo cuidado para que você não lesione nas aulas e promove um alcance rápido de objetivos com segurança. Sem igual.</blockquote><figcaption>Alanna Vieira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Sensacional! Simplesmente o MELHOR crossfit da região: ambiente familiar e amigável!</blockquote><figcaption>Karen Teixeira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor box!! Preza pela segurança e na qualidade do treinamento!! Professor excelente! Um exemplo para os alunos!!</blockquote><figcaption>Leonardo Sales</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor Box da cidade! Tudo feito com muita segurança e acompanhamento personalizado.</blockquote><figcaption>Elisa Alvarenga</figcaption></figure></div></div><div class="trilho volta"><div class="faixa"><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor CrossFit! Muiiita técnica com o melhor o professor! Sempre a segurança em primeiro lugar</blockquote><figcaption>Shenia Cardoso</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor box. Melhor crossfit da cidade. Melhor cuidado com a sua saúde. Recomendo.</blockquote><figcaption>Lucas H.E.Oliveira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Muita dedicação, técnica, profissionalismo, conhecimento, atenção, motivação e qualidade em cada treino e com cada um dos alunos.</blockquote><figcaption>Fernanda Teixeira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>O melhor Box da vida!! Técnica, segurança, acolhimento e os melhores amigos ❤️</blockquote><figcaption>Lorena Santos</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Box ímpar!!! Coach Rafael super dedicado e motivador!!!</blockquote><figcaption>Maura Albano</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Esse Box tem uma energia incrível. O melhor Box de Pedro Leopoldo!!!</blockquote><figcaption>Iolanda Dias</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Lugar, agradável, familiar e um acompanhamento impecável em todos os exercícios que realizamos!</blockquote><figcaption>Helen Daniel</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Box top demais. Rafael sempre atencioso.</blockquote><figcaption>Hermann Octaviano</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Ótimo treinamento! Professor qualificado, turma animada e amiga!!</blockquote><figcaption>Lorena T</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Excelente coach, turma top!</blockquote><figcaption>Daniel Moura</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Box muito Top. Muito organizado.</blockquote><figcaption>Eduardo Quirino</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>O melhor box da vidaaaaaaaaaaa</blockquote><figcaption>Fernanda Peixoto</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Qualidade em tudo! Professor extremamente qualificado.</blockquote><figcaption>Brenner Batista</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor Cross de todos! 🚀</blockquote><figcaption>Leonardo Teixeira</figcaption></figure></div><div class="faixa" aria-hidden="true"><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor CrossFit! Muiiita técnica com o melhor o professor! Sempre a segurança em primeiro lugar</blockquote><figcaption>Shenia Cardoso</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor box. Melhor crossfit da cidade. Melhor cuidado com a sua saúde. Recomendo.</blockquote><figcaption>Lucas H.E.Oliveira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Muita dedicação, técnica, profissionalismo, conhecimento, atenção, motivação e qualidade em cada treino e com cada um dos alunos.</blockquote><figcaption>Fernanda Teixeira</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>O melhor Box da vida!! Técnica, segurança, acolhimento e os melhores amigos ❤️</blockquote><figcaption>Lorena Santos</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Box ímpar!!! Coach Rafael super dedicado e motivador!!!</blockquote><figcaption>Maura Albano</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Esse Box tem uma energia incrível. O melhor Box de Pedro Leopoldo!!!</blockquote><figcaption>Iolanda Dias</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Lugar, agradável, familiar e um acompanhamento impecável em todos os exercícios que realizamos!</blockquote><figcaption>Helen Daniel</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Box top demais. Rafael sempre atencioso.</blockquote><figcaption>Hermann Octaviano</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Ótimo treinamento! Professor qualificado, turma animada e amiga!!</blockquote><figcaption>Lorena T</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Excelente coach, turma top!</blockquote><figcaption>Daniel Moura</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Box muito Top. Muito organizado.</blockquote><figcaption>Eduardo Quirino</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>O melhor box da vidaaaaaaaaaaa</blockquote><figcaption>Fernanda Peixoto</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Qualidade em tudo! Professor extremamente qualificado.</blockquote><figcaption>Brenner Batista</figcaption></figure><figure class="review"><p class="estrelas" aria-label="5 estrelas">★★★★★</p><blockquote>Melhor Cross de todos! 🚀</blockquote><figcaption>Leonardo Teixeira</figcaption></figure></div></div></div>
+      <div class="links">
+        <a href="https://www.google.com/maps/search/YTR+Funcional+%26+Condicionamento+Pedro+Leopoldo" target="_blank" rel="noopener">Ler todas as avaliações</a>
+        <a href="https://www.google.com/maps/search/YTR+Funcional+%26+Condicionamento+Pedro+Leopoldo" target="_blank" rel="noopener">Avaliar a Yutoro</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="horarios" class="horarios gutter">
+    <div class="wrap">
+      <div>
+        <h2>Horários</h2>
+        <div class="proxima" aria-live="polite">
+          <span class="rotulo">Próxima turma</span>
+          <span class="hora" id="prox-hora">18h</span>
+          <span class="quando" id="prox-quando">Segunda a sexta</span>
+        </div>
+        <p class="checkin">Turmas de manhã cedo e à noite. O check-in é feito pelo app <strong>Tecnofit Box</strong>.</p>
+      </div>
+      <div>
+        <ul class="grade" id="grade" aria-label="Horários das turmas por dia">
+          <li data-dia="1"><b>Seg</b><div class="horas"><span data-h="5">05h</span><span data-h="6">06h</span><span data-h="7">07h</span><span data-h="8">08h</span><span data-h="18">18h</span><span data-h="19">19h</span><span data-h="20">20h</span></div></li>
+          <li data-dia="2"><b>Ter</b><div class="horas"><span data-h="6">06h</span><span data-h="7">07h</span><span data-h="8">08h</span><span data-h="18">18h</span><span data-h="19">19h</span><span data-h="20">20h</span></div></li>
+          <li data-dia="3"><b>Qua</b><div class="horas"><span data-h="6">06h</span><span data-h="7">07h</span><span data-h="8">08h</span><span data-h="18">18h</span><span data-h="19">19h</span><span data-h="20">20h</span></div></li>
+          <li data-dia="4"><b>Qui</b><div class="horas"><span data-h="6">06h</span><span data-h="7">07h</span><span data-h="8">08h</span><span data-h="18">18h</span><span data-h="19">19h</span><span data-h="20">20h</span></div></li>
+          <li data-dia="5"><b>Sex</b><div class="horas"><span data-h="5">05h</span><span data-h="6">06h</span><span data-h="7">07h</span><span data-h="8">08h</span><span data-h="18">18h</span><span data-h="19">19h</span><span data-h="20">20h</span></div></li>
+          <li data-dia="6" class="fechado"><b>Sáb</b><span class="vazio">Sem turmas</span></li>
+          <li data-dia="0" class="fechado"><b>Dom</b><span class="vazio">Sem turmas</span></li>
+        </ul>
+        <p class="legenda">Cada horário é o início da turma.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="experimental" class="experimental gutter">
+    <div class="wrap">
+      <div class="cabeca" style="margin-bottom: 0">
+        <h2>Sua primeira aula</h2>
+        <p>Responda três perguntas e continue a conversa no WhatsApp com tudo já escrito.</p>
+        <figure style="margin: 16px 0 0; max-width: 360px"><img src="img/boas-vindas.jpg" width="343" height="350" loading="lazy" alt="Professor e professora da Yutoro sorrindo e apontando para dentro do box, em sinal de boas-vindas"></figure>
+      </div>
+      <form id="form-aula" novalidate>
+        <div>
+          <label for="nome">Seu nome</label>
+          <input type="text" id="nome" name="nome" autocomplete="given-name" placeholder="Como podemos te chamar?">
+        </div>
+        <fieldset>
+          <legend>Seu objetivo</legend>
+          <div class="opcoes">
+            <label><input type="radio" name="objetivo" value="emagrecer" id="obj-1" checked><span>Emagrecer</span></label>
+            <label><input type="radio" name="objetivo" value="ganhar massa" id="obj-2"><span>Ganhar massa</span></label>
+            <label><input type="radio" name="objetivo" value="acabar com uma dor" id="obj-3"><span>Acabar com uma dor</span></label>
+            <label><input type="radio" name="objetivo" value="melhorar o condicionamento" id="obj-4"><span>Condicionamento</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Já treinou antes?</legend>
+          <div class="opcoes">
+            <label><input type="radio" name="experiencia" value="estou começando agora" id="exp-1" checked><span>Estou começando</span></label>
+            <label><input type="radio" name="experiencia" value="já treinei, mas parei" id="exp-2"><span>Treinei, mas parei</span></label>
+            <label><input type="radio" name="experiencia" value="treino com frequência" id="exp-3"><span>Treino com frequência</span></label>
+          </div>
+        </fieldset>
+        <div>
+          <a class="botao" id="enviar" href="https://wa.me/5531982679905" target="_blank" rel="noopener">Continuar no WhatsApp</a>
+          <p class="nota-form" style="margin-top: 12px">Nada é enviado nem guardado por este site. O WhatsApp abre com a mensagem pronta.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section id="duvidas" class="gutter">
+    <div class="wrap">
+      <div class="cabeca"><h2>Dúvidas</h2></div>
+      <div class="duvidas">
+        <details><summary>Nunca treinei. Consigo acompanhar?</summary><p>Sim. O treino é adaptado ao seu nível e tem sempre um professor ao lado, ajustando a técnica e a carga.</p></details>
+        <details><summary>Como funciona a aula experimental?</summary><p>Você agenda pelo WhatsApp e faz uma aula com a turma, acompanhado de perto. <span class="pendente">valor e duração a confirmar</span></p></details>
+        <details><summary>Tem aula para criança?</summary><p>Sim, tem aula Kids. <span class="pendente">idade e horário a confirmar</span></p></details>
+        <details><summary>Quais são os horários?</summary><p>Segunda e sexta: 5h, 6h, 7h, 8h, 18h, 19h e 20h. Terça, quarta e quinta: 6h, 7h, 8h, 18h, 19h e 20h. Sábado e domingo não há turmas. O check-in é pelo app Tecnofit Box.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="onde" class="gutter">
+    <div class="wrap onde">
+      <h2>Onde estamos</h2>
+      <p class="endereco">R. José Píres de Araújo, 363, Centro<br>Pedro Leopoldo, MG, 33600-000</p>
+      <p class="tel">(31) 98267-9905</p>
+      <div class="acoes">
+        <a class="botao" href="https://wa.me/5531982679905?text=Ol%C3%A1!%20Vi%20o%20site%20da%20Yutoro%20e%20queria%20saber%20mais%20sobre%20os%20treinos." target="_blank" rel="noopener">Chamar no WhatsApp</a>
+        <a class="botao vazado" href="https://www.google.com/maps/search/?api=1&query=Rua+Jos%C3%A9+P%C3%ADres+de+Ara%C3%BAjo+363+Centro+Pedro+Leopoldo" target="_blank" rel="noopener">Como chegar</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="gutter">
+  <div class="wrap">
+    <span class="marca"><img src="img/touro.png" width="331" height="256" alt="">Yutoro</span>
+    <span>Funcional e condicionamento em Pedro Leopoldo, MG. © 2026</span>
+    <a class="insta" href="https://www.instagram.com/yutorobcf/" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</footer>
+
+<div class="barra"><a class="botao" href="#experimental">Agendar aula experimental</a></div>
+
+<script>
+const form = document.getElementById('form-aula');
+const enviar = document.getElementById('enviar');
+function montar() {
+  const nome = form.nome.value.trim();
+  const objetivo = form.objetivo.value;
+  const experiencia = form.experiencia.value;
+  const msg = `Olá! ${nome ? 'Sou ' + nome + '. ' : ''}Vi o site da Yutoro e quero agendar uma aula experimental. Meu objetivo é ${objetivo} e ${experiencia}.`;
+  enviar.href = 'https://wa.me/5531982679905?text=' + encodeURIComponent(msg);
+}
+form.addEventListener('input', montar);
+form.addEventListener('change', montar);
+form.addEventListener('submit', e => e.preventDefault());
+montar();
+const turmas = { 1: [5,6,7,8,18,19,20], 2: [6,7,8,18,19,20], 3: [6,7,8,18,19,20], 4: [6,7,8,18,19,20], 5: [5,6,7,8,18,19,20], 6: [], 0: [] };
+const nomes = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+const agora = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+const dia = agora.getDay(), hora = agora.getHours() + agora.getMinutes() / 60;
+const linha = document.querySelector(`#grade li[data-dia="${dia}"]`);
+linha?.classList.add('hoje');
+linha?.querySelectorAll('.horas span').forEach(s => { if (+s.dataset.h + 1 <= hora) s.classList.add('passou'); });
+let prox = null;
+for (let i = 0; i < 8 && !prox; i++) {
+  const d = (dia + i) % 7;
+  const h = turmas[d].find(h => i > 0 || h > hora);
+  if (h !== undefined) prox = { d, h, i };
+}
+if (prox) {
+  document.getElementById('prox-hora').textContent = prox.h + 'h';
+  document.getElementById('prox-quando').textContent = prox.i === 0 ? 'Hoje' : prox.i === 1 ? 'Amanhã' : nomes[prox.d].charAt(0).toUpperCase() + nomes[prox.d].slice(1);
+  if (prox.i === 0) linha?.querySelector(`.horas span[data-h="${prox.h}"]`)?.classList.add('agora');
+}
+</script>
+
+</body>
+</html>
