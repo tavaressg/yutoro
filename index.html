@@ -197,6 +197,13 @@ details p { padding-bottom: 20px; color: var(--aco); max-width: 60ch; }
 .onde .tel { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; user-select: all; }
 .onde .acoes { display: flex; flex-wrap: wrap; gap: 12px; }
 
+.onde .onde-texto { display: grid; gap: 24px; align-content: start; }
+.mapa { display: block; position: relative; min-height: 320px; border: 1px solid var(--linha); background: var(--carvao); }
+.mapa iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.mapa-aviso { display: grid; place-items: center; text-align: center; color: var(--aco); text-decoration: none; padding: 24px; font-size: 15px; }
+.mapa-aviso:hover { color: var(--osso); border-color: var(--laranja); }
+@media (min-width: 1024px) { .onde { grid-template-columns: 1fr 1.3fr; align-items: stretch; gap: 64px; } .mapa { min-height: 420px; } }
+
 footer { padding-block: 40px 120px; border-top: 1px solid var(--linha); font-size: 14px; color: var(--aco); }
 footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: center; }
 footer .marca { font-size: 20px; }
@@ -388,6 +395,7 @@ footer a.insta { padding-block: 8px; color: var(--laranja); font-weight: 600; }
 
   <section id="onde" class="gutter">
     <div class="wrap onde">
+      <div class="onde-texto">
       <h2>Onde estamos</h2>
       <p class="endereco">R. José Píres de Araújo, 363, Centro<br>Pedro Leopoldo, MG, 33600-000</p>
       <p class="tel">(31) 98267-9905</p>
@@ -395,6 +403,8 @@ footer a.insta { padding-block: 8px; color: var(--laranja); font-weight: 600; }
         <a class="botao" href="https://wa.me/5531982679905?text=Ol%C3%A1!%20Vi%20o%20site%20da%20Yutoro%20e%20queria%20saber%20mais%20sobre%20os%20treinos." target="_blank" rel="noopener">Chamar no WhatsApp</a>
         <a class="botao vazado" href="https://www.google.com/maps/search/?api=1&query=Rua+Jos%C3%A9+P%C3%ADres+de+Ara%C3%BAjo+363+Centro+Pedro+Leopoldo" target="_blank" rel="noopener">Como chegar</a>
       </div>
+      </div>
+      <div class="mapa"><iframe src="https://www.google.com/maps?q=YTR+Funcional+%26+Condicionamento,+R.+Jos%C3%A9+P%C3%ADres+de+Ara%C3%BAjo,+363,+Centro,+Pedro+Leopoldo+-+MG&z=16&output=embed" title="Mapa da Yutoro no Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
     </div>
   </section>
 </main>
